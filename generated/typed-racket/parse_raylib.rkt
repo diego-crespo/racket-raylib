@@ -1,13 +1,14 @@
 #lang racket
 (require "functions_as_string.rkt")
-
+;;!!! Consider figuring out how to stop the final closing paren from being on it's own new line
 ;; (define src (open-input-file "../unsafe/functions.rkt" #:mode 'text))
 
-(define out (open-output-file "foo.txt" #:exists 'replace))
+(define out (open-output-file "functions.rkt" #:exists 'replace))
+;; preamble
 (display "#lang typed/racket\n" out)
 (display "(require \"structs.rkt\")\n" out)
 (display "(require/typed/provide ffi/unsafe\n" out)
-(display "  [#:opaque Pointer cpointer?])\n" out)
+(display "  [#:opaque Pointer cpointer?])\n\n" out)
 (display "(require/typed/provide \"../unsafe/functions.rkt\"\n" out)
 
 (define (c->racket-type type str)
@@ -58,7 +59,7 @@
     ["_byte" "Byte"]
     ["_Sound" "Sound"]
     ["_Music" "Music"]
-    ["_AudioStream" "AudioStream"]                    
+    ["_AudioStream" "AudioStream"]                
     [else (begin
             (println (format "type is : ~a str is:~a" type str))
             type)]))
@@ -76,6 +77,25 @@
                                                    (display " (-> " out))
                                                  (unless new-match
                                                    (println str)))]
+      
+      [(string-contains? str "(_pointer-to")   (begin
+                                                 (define new-match (regexp-match
+                                                                    "[-][>] \\(_pointer-to (.*)\\)\\)\\)\r" str))
+                                                 (define new-match2 (regexp-match "\\[[A-z]+[0-9]? : \\(_pointer-to (.*)\\)\\]\r" str))                                                  
+                                                 (when new-match
+                                                   (define return-type (cadr new-match))
+                                                   (display "Pointer" out)
+                                                   (display ")]" out)
+                                                   (display "\n" out))
+
+                                                 (when new-match2
+                                                   (define type (cadr new-match2))
+                                                   (display "Pointer" out)
+                                                   (display " " out))
+
+                                                 (when (and (false? new-match) (false? new-match2))
+                                                   (println str)))]
+
       [(string-contains? str " : ") (begin
                                       (define new-match (regexp-match "[[][A-z]+[0-9]? [:] (.*)]" str))
                                       (when new-match
@@ -84,6 +104,7 @@
                                         (display " " out))
                                       (unless new-match
                                         (println str)))]
+
 
       [(string-contains? str "->") (begin
                                      (define new-match (regexp-match "[-][>] (.*)[)][)]\r" str))
@@ -96,5 +117,6 @@
                                        (println str)))])
     (loop (read-line src))))
 
-
+;; closing the last paren
+(display ")" out)
 (close-output-port out)
