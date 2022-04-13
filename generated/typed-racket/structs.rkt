@@ -8,10 +8,7 @@
 (require/typed/provide ffi/unsafe
   [#:opaque Pointer cpointer?])
 
-(require/typed/provide "../structs..rkt"
-  [#:opaque Vector2 Vector2?]
-  [make-Vector2 (-> Vector2)]
-
+(require/typed/provide "../structs.rkt"
   [#:opaque Vector2 Vector2?]
   [Vector2-x (-> Vector2 Float)]
   [Vector2-y (-> Vector2 Float)]
@@ -64,11 +61,12 @@
   [make-Rectangle (-> Float Float Float Float Rectangle)]
 
   [#:opaque Image Image?]
+  [Image-data (-> Image Pointer)]
   [Image-width (-> Image Integer)]
   [Image-height (-> Image Integer)]
   [Image-mipmaps (-> Image Integer)]
   [Image-format (-> Image Integer)]
-  [make-Image (-> Integer Integer Integer Integer Image)]
+  [make-Image (-> Pointer Integer Integer Integer Integer Image)]
 
   [#:opaque Texture Texture?]
   [Texture-id (-> Texture Integer)]
@@ -106,7 +104,8 @@
   [Font-glyphCount (-> Font Integer)]
   [Font-glyphPadding (-> Font Integer)]
   [Font-texture (-> Font Texture2D)]
-  [make-Font (-> Integer Integer Integer Texture2D Font)]
+  [Font-recs (-> Font Rectangle)]
+  [make-Font (-> Integer Integer Integer Texture2D Rectangle Pointer Font)]
 
   [#:opaque Camera3D Camera3D?]
   [Camera3D-position (-> Camera3D Vector3)]
@@ -123,21 +122,36 @@
   [Camera2D-zoom (-> Camera2D Float)]
   [make-Camera2D (-> Vector2 Vector2 Float Float Camera2D)]
 
+
+
   [#:opaque Mesh Mesh?]
   [Mesh-vertexCount (-> Mesh Integer)]
-  [Mesh-triangleCount (-> Mesh Integer)]
-  [Mesh-vaoId (-> Mesh Integer)]
-  [make-Mesh (-> Integer Integer Integer Mesh)]
+   [Mesh-triangleCount (-> Mesh Integer)]
+   [Mesh-vertices (-> Mesh Pointer)]
+   [Mesh-texcoords (-> Mesh Pointer)]
+   [Mesh-texcoords2 (-> Mesh Pointer)]
+   [Mesh-normals (-> Mesh Pointer)]
+   [Mesh-tangents (-> Mesh Pointer)]
+   [Mesh-colors (-> Mesh Pointer)]
+   [Mesh-indices (-> Mesh Pointer)]
+   [Mesh-animVertices (-> Mesh Pointer)]
+   [Mesh-animNormals (-> Mesh Pointer)]
+   [Mesh-boneIds (-> Mesh Pointer)]
+   [Mesh-boneWeights (-> Mesh Pointer)]
+   [Mesh-vaoId (-> Mesh Integer)]
+   [Mesh-vboId (-> Mesh Pointer)]
+  [make-Mesh (-> Integer Integer Pointer Pointer Pointer Pointer Pointer Pointer Pointer Pointer Pointer Pointer Pointer Integer Pointer Mesh)]
 
   [#:opaque Shader Shader?]
   [Shader-id (-> Shader Integer)]
-  [make-Shader (-> Integer Shader)]
+  [Shader-locs (-> Shader Pointer)]  
+  [make-Shader (-> Integer Pointer Shader)]
 
-  [#:opaque _Transform _Transform?]
-  [_Transform-translation (-> _Transform Vector3)]
-  [_Transform-rotation (-> _Transform _Quaternion)]
-  [_Transform-scale (-> _Transform Vector3)]
-  [make-_Transform (-> Vector3 _Quaternion Vector3 _Transform)]
+  [#:opaque Transform Transform?]
+  [Transform-translation (-> Transform Vector3)]
+  [Transform-rotation (-> Transform Quaternion)]
+  [Transform-scale (-> Transform Vector3)]
+  [make-Transform (-> Vector3 Quaternion Vector3 Transform)]
 
   [#:opaque Ray Ray?]
   [Ray-position (-> Ray Vector3)]
@@ -161,13 +175,15 @@
   [Wave-sampleRate (-> Wave Integer)]
   [Wave-sampleSize (-> Wave Integer)]
   [Wave-channels (-> Wave Integer)]
-  [make-Wave (-> Integer Integer Integer Integer Wave)]
+  [Wave-data (-> Wave Pointer)]  
+  [make-Wave (-> Integer Integer Integer Integer Pointer Wave)]
 
   [#:opaque AudioStream AudioStream?]
+  [AudioStream-buffer (-> AudioStream Pointer)]
   [AudioStream-sampleRate (-> AudioStream Integer)]
   [AudioStream-sampleSize (-> AudioStream Integer)]
   [AudioStream-channels (-> AudioStream Integer)]
-  [make-AudioStream (-> Integer Integer Integer AudioStream)]
+  [make-AudioStream (-> Pointer Integer Integer Integer AudioStream)]
 
   [#:opaque Sound Sound?]
   [Sound-stream (-> Sound AudioStream)]
@@ -179,7 +195,8 @@
   [Music-frameCount (-> Music Integer)]
   [Music-looping (-> Music Boolean)]
   [Music-ctxType (-> Music Integer)]
-  [make-Music (-> AudioStream Integer Boolean Integer Music)])
+  [Music-ctxData (-> Music Pointer)]  
+  [make-Music (-> AudioStream Integer Boolean Integer Pointer Music)])
 
 
 (define-type Quaternion Vector4)

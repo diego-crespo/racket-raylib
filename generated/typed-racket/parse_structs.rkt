@@ -10,87 +10,12 @@
 ;; [Vector2-x (-> Vector2 Float)]
 ;; [Vector2-y (-> Vector2 Float)]
 
+;;!! make-image misses [Image-data (-> Image Pointer)] b/c it's a Pointer and it doesn't picked up
 ;; global 
 (define *new-struct "")
 (define *make-struct "")
 
 ;; preamble
-(define foo "#lang typed/racket(provide Texture2D
-         Texture2D-id
-         Texture2D-width
-         Texture2D-height
-         Texture2D-mipmaps
-         Texture2D-format)
-
-(require/typed/provide \"../unsafe/structs.rkt\"
-  [#:opaque Vector2 Vector2?]
-  [make-Vector2 (-> Float Float Vector2)]
-  [Vector2-x (-> Vector2 Float)]
-  [Vector2-y (-> Vector2 Float)]
-
-  )
-
-(define-type Texture2D Texture)
-
-(: Texture2D-id (-> Texture2D  Integer))
-(define (Texture2D-id tex)
-  (Texture-id tex))
-
-(: Texture2D-width (-> Texture2D  Integer))
-(define (Texture2D-width tex)
-  (Texture-width tex))
-
-(: Texture2D-height (-> Texture2D  Integer))
-(define (Texture2D-height tex)
-  (Texture-height tex))
-
-(: Texture2D-mipmaps (-> Texture2D  Integer))
-(define (Texture2D-mipmaps tex)
-  (Texture-mipmaps tex))
-
-(: Texture2D-format (-> Texture2D  Integer))
-(define (Texture2D-format tex)
-  (Texture-format tex))")
-;; #lang racket/base
-
-;; (require ffi/unsafe raylib/support)
-
-;; (provide (all-defined-out))
-
-;; ;; Vector2, 2 components
-;; (define-cstruct _Vector2
-;;   ([x _float] ; Vector x component
-;;    [y _float] ; Vector y component
-;;    ))
-
-;; ;; Vector3, 3 components
-;; (define-cstruct _Vector3
-;;   ([x _float] ; Vector x component
-;;    [y _float] ; Vector y component
-;;    [z _float] ; Vector z component
-;;    ))
-
-;; ;; Vector4, 4 components
-;; (define-cstruct _Vector4
-;;   ([x _float] ; Vector x component
-;;    [y _float] ; Vector y component
-;;    [z _float] ; Vector z component
-;;    [w _float] ; Vector w component
-;;    ))
-
-;; (define _Quaternion _Vector4)
-
-;; ;; Matrix, 4x4 components, column major, OpenGL style, right handed
-;; (define-cstruct _Matrix
-;;   ([m0 _float] [m4 _float] [m8 _float] [m12 _float] ; Matrix first row (4 components)
-;;    [m1 _float] [m5 _float] [m9 _float] [m13 _float] ; Matrix second row (4 components)
-;;    [m2 _float] [m6 _float] [m10 _float] [m14 _float] ; Matrix third row (4 components)
-;;    [m3 _float] [m7 _float] [m11 _float] [m15 _float] ; Matrix fourth row (4 components)
-;;    ))
-
-
-
-
 (display "#lang typed/racket\n" out)
 (display "(provide Quaternion\n" out)
 (display "         Texture2D\n" out)
@@ -101,7 +26,7 @@
 
 (display "(require/typed/provide ffi/unsafe\n" out)
 (display "  [#:opaque Pointer cpointer?])\n\n" out)
-(display "(require/typed/provide \"../structs..rkt\"\n" out)
+(display "(require/typed/provide \"../structs.rkt\"\n" out)
 
 (define (c->racket-type type str)
   ;; I know I can look for _var and replace _ and capitalize, just want to see all the types so I can decide how the
@@ -136,7 +61,7 @@
     ["_SaveFileDataCallback" "SaveFileDataCallback"]
     ["_LoadFileTextCallback" "LoadFileTextCallback"]
     ["_SaveFileTextCallback" "SaveFileTextCallback"]
-    ["_long" "Long"]
+    ["_long" "Integer"]
     ["_Rectangle" "Rectangle"]
     ["_NPatchInfo" "NPatchInfo"]
     ["_Vector4" "Vector4"]
@@ -155,6 +80,8 @@
     ["_Sound" "Sound"]
     ["_Music" "Music"]
     ["_AudioStream" "AudioStream"]
+    ["_Transform" "Transform"]
+    ["_Quaternion" "Quaternion"]        
     [else (begin
             (println (format "type is : ~a str is:~a" type str))
             type)]))
@@ -166,10 +93,6 @@
       [(string-contains? str "(define-cstruct _Matrix") (begin
 
                                                       (define struct-name (c->racket-type "Matrix" str))
-                                                      ;; [#:opaque Vector2 Vector2?]
-                                                      ;; [make-Vector2 (-> Float Float Vector2)]
-                                                      ;; [Vector2-x (-> Vector2 Float)]
-                                                      ;; [Vector2-y (-> Vector2 Float)]
                                                       (display *make-struct out)
                                                       (display (format " ~a)]\n\n" *new-struct) out)
                                                       (display

@@ -44,7 +44,7 @@
     ["_SaveFileDataCallback" "SaveFileDataCallback"]
     ["_LoadFileTextCallback" "LoadFileTextCallback"]
     ["_SaveFileTextCallback" "SaveFileTextCallback"]
-    ["_long" "Long"]
+    ["_long" "Integer"]
     ["_Rectangle" "Rectangle"]
     ["_NPatchInfo" "NPatchInfo"]
     ["_Vector4" "Vector4"]
@@ -63,6 +63,8 @@
     ["_Sound" "Sound"]
     ["_Music" "Music"]
     ["_AudioStream" "AudioStream"]
+    ["_Transform" "Transform"]
+    ["_Quaternion" "Quaternion"]        
     [else (begin
             (println (format "type is : ~a str is:~a" type str))
             type)]))
