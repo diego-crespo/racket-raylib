@@ -25,12 +25,14 @@
     ["_float" "Float"]
     ["_Color" "Color"]
     ["_Shader" "Shader"]
+    ["_Texture" "Texture"]    
     ["_Texture2D" "Texture2D"]
     ["_Camera" "Camera"]
     ["_Camera2D" "Camera2D"]
     ["_Camera3D" "Camera3D"]
     ["_Matrix" "Matrix"]
     ["_Vector3" "Vector3"]
+    ["_RenderTexture" "RenderTexture"]    
     ["_RenderTexture2D" "RenderTexture2D"]
     ["_VrStereoConfig" "VrStereoConfig"]
     ["_VrDeviceInfo" "VrDeviceInfo"]
@@ -57,9 +59,10 @@
     ["_Wave" "Wave"]
     ["_TextureCubemap" "TextureCubemap"]
     ["_byte" "Byte"]
+    ["_ubyte" "Byte"]
     ["_Sound" "Sound"]
     ["_Music" "Music"]
-    ["_AudioStream" "AudioStream"]                
+    ["_AudioStream" "AudioStream"]
     [else (begin
             (println (format "type is : ~a str is:~a" type str))
             type)]))
