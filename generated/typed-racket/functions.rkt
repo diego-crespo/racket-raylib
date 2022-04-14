@@ -1,7 +1,5 @@
 #lang typed/racket
 (require "structs.rkt")
-(require/typed/provide ffi/unsafe
-  [#:opaque Pointer cpointer?])
 
 (require/typed/provide "../unsafe/functions.rkt"
   [InitWindow (-> Integer Integer String Void)]
